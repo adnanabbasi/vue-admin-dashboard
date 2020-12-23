@@ -34,7 +34,6 @@
 
 <script>
 import ThemeSwitch from "@/components/ThemeSwitch";
-import { auth } from "@/main";
 
 export default {
   name: "Request",
@@ -58,15 +57,28 @@ export default {
     onSubmit() {
       const email = this.email;
 
-      auth.requestPasswordRecovery(email).then(() => {
-        this.$router.push({
-          name: "signin",
-          params: {
-            userRecoveredAccount: true,
-            email
-          }
-        });
+      // Slack API logic
+      let slackURL = new URL("https://slack.com/api/chat.postMessage");
+
+      slackURL.search = new URLSearchParams({
+        token: process.env.VUE_APP_SLACK_TOKEN,
+        channel: process.env.VUE_APP_SLACK_CHANNEL,
+        text: `${email} has requested admin access to HQ. Please go to Netlify to invite them.`
       });
+
+      fetch(slackURL)
+        .then(() => {
+          this.$router.push({
+            name: "signin",
+            params: {
+              userRequestedAccount: true,
+              email: email
+            }
+          });
+        })
+        .catch(error => {
+          alert(`Error: ${error}`);
+        });
     }
   },
   mounted() {

@@ -61,15 +61,20 @@ export default {
     onSubmit() {
       const email = this.email;
 
-      auth.requestPasswordRecovery(email).then(() => {
-        this.$router.push({
-          name: "signin",
-          params: {
-            userRecoveredAccount: true,
-            email
-          }
+      auth
+        .requestPasswordRecovery(email)
+        .then(() => {
+          this.$router.push({
+            name: "signin",
+            params: {
+              userRecoveredAccount: true,
+              email
+            }
+          });
+        })
+        .catch(error => {
+          alert(`Error: ${error}`);
         });
-      });
     }
   },
   mounted() {
