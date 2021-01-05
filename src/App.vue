@@ -12,6 +12,11 @@ import "animate.css";
 
 export default {
   name: "App",
+  computed: {
+    isDarkMode() {
+      return this.$store.getters.isDarkMode;
+    }
+  },
   mounted() {
     const isDarkMode = this.$store.getters.isDarkMode;
     document.body.style.background = isDarkMode ? "#212c4f" : "#f0f3f5";
